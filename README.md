@@ -16,7 +16,8 @@ Just build it by typping `cmake .&& make`
 ### About save
 Save file is located in `ux0:data\msweep_save.txt` you can simply edit it<br>
 Here is template : `easy medium hard custom` <b>Do not make extra spaces</b><br>
-Here is example : `123 456 789 101` time is in milliseconds
+Here is example : `123 456 789 101` time is in milliseconds<br>
+To reset saves just delete *.txt file
 ## Screenshots
 <img src="screenshots/1.jpg"><br>
 <img src="screenshots/2.jpg"><br>
