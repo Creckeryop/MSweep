@@ -1,6 +1,11 @@
 #include "game.h"
 #include "screen.h"
 game::game() : state(1) {
+	gSoloud.init();
+	jump.load("app0:/sounds/jump.wav");
+	click.load("app0:/sounds/click.wav");
+	boom.load("app0:/sounds/boom.wav");
+	tap.load("app0:/sounds/tap.wav");
 	vita2d_init();
 	memset(&pad, 0, sizeof(pad));
 	font = new Ffont();

@@ -71,7 +71,7 @@ void minesweeper::Open(int x, int y) {
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 				if (minField[i][j])
-					actField[x][y] = 1;
+					actField[i][j] = 1;
 		return;
 	}
 	if (numField[x][y] == 0) {

@@ -19,7 +19,7 @@ public:
 	screen(game *owner): owner(owner) {};
 	timer t, state_change, pause, win;
 	int key_pause = 300, pause_1 = 300, pause_2 = 200, pause_3 = 60, state = 0;
-	vita2d_texture *lol = NULL;
+	vita2d_texture *screenshot = NULL;
 	bool created = false;
 	virtual void draw() {};
 	virtual void update(double dt) {};
@@ -34,6 +34,7 @@ private:
 	bool first = true, is_record = false;
 	int hold_x = -1, hold_y = -1;
 public:
+	void change_theme(int theme_id);
 	int Colors[10] = {
 		RGBA8(0, 0, 0, 255),
 		RGBA8(57, 90, 211, 255),
@@ -47,10 +48,10 @@ public:
 		RGBA8(25, 25, 25, 255)
 	};
 	float p_x = 0, p_y = 0;
-	vita2d_texture *tile1 = NULL, *tile2 = NULL, *frame = NULL, *font = NULL, *wind = NULL, *mine = NULL, *buttons = NULL;
-	animation bomb = animation(vita2d_load_PNG_file("app0:assets/bomb.png"), 16, 16, 50, 2, false);
-	animation flag = animation(vita2d_load_PNG_file("app0:assets/flag.png"), 16, 16, 100, 2, true);
-	animation mark = animation(vita2d_load_PNG_file("app0:assets/quest.png"), 16, 16, 120, 2, true);
+	vita2d_texture *tile1 = NULL, *tile2 = NULL, *frame = NULL, *font = NULL, *wind = NULL, *mine = NULL, *buttons = NULL, *tiles = NULL, *flags = NULL;
+	animation bomb = animation(vita2d_load_PNG_file("app0:assets/bomb.png"),176, 16, 16, 50, 2, false);
+	animation flag = animation(NULL,64, 16, 16, 100, 2, true);
+	animation mark = animation(vita2d_load_PNG_file("app0:assets/quest.png"), 80, 16, 16, 120, 2, true);
 	std::vector<particle> particles;
 	short frame_x, frame_y, size = 2;
 	timer time, record, record_e, record_m, record_h, record_c;
@@ -62,6 +63,7 @@ public:
 	void control(SceCtrlData &pad, SceCtrlData &oldpad);
 	void load(int width, int height, int mines);
 	void load(int mode);
+	void save();
 	~game_screen();
 };
 class pause_screen : public screen {
@@ -76,7 +78,7 @@ class settings_screen : public screen {
 public:
 	int pause_3 = 0;
 	settings_screen(game *owner);
-	std::string states[4] = { "", "Width: ", "Height: ","Mines: "};
+	std::string states[6] = { "", "Width: ", "Height: ","Mines: ","Style: ","Reset Saves" };
 	std::string modes[5] = { "Easy", "Medium", "Expert", "Custom" };
 	void draw();
 	void update(double dt);

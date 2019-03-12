@@ -8,14 +8,14 @@ public:
 	bool loop;
 	vita2d_texture *sheet = NULL;
 	timer time;
-	animation(vita2d_texture *_sheet, int w, int h, int dt, int _size, bool LOOP) {
+	animation(vita2d_texture *_sheet, int _width, int w, int h, int dt, int _size, bool LOOP) {
 		sheet = _sheet;
 		width = w;
 		height = h;
 		delta = dt;
 		size = _size;
 		loop = LOOP;
-		images = vita2d_texture_get_width(sheet) / w;
+		images = _width / w;
 		time.Reset();
 	}
 	void Reset() {
@@ -32,7 +32,8 @@ public:
 				card = images - 1;
 			}
 		}
-		vita2d_draw_texture_part_scale_rotate(sheet, x, y, card * width, 0, width, height, size, size, rot);
+		if (sheet!=NULL)
+			vita2d_draw_texture_part_scale_rotate(sheet, x, y, card * width, 0, width, height, size, size, rot);
 	}
 	~animation() {
 		delete sheet;

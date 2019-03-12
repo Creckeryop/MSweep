@@ -27,7 +27,7 @@ set(VITA_APP_NAME "MSweep")
 # unique string of developer and Y = a unique number for this app
 set(VITA_TITLEID  "MSWEEPER1")
 # Optional version string to show in LiveArea's more info screen
-set(VITA_VERSION  "01.00")
+set(VITA_VERSION  "01.10")
 
 ## Flags and includes for building
 # Note that we make sure not to overwrite previous flags
@@ -70,6 +70,9 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
 	SceLibKernel_stub # this line is only for demonstration. It's not needed as
     vita2d 
+	soloud
+	pthread
+	SceAudio_stub
 	SceDisplay_stub 
 	SceTouch_stub
 	SceGxm_stub
@@ -99,12 +102,15 @@ vita_create_vpk(${PROJECT_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
   FILE sce_sys/livearea/contents/startup.png sce_sys/livearea/contents/startup.png
   FILE sce_sys/livearea/contents/template.xml sce_sys/livearea/contents/template.xml
   FILE assets/font.png assets/font.png
-  FILE assets/flag.png assets/flag.png
+  FILE assets/flags.png assets/flags.png
   FILE assets/bomb.png assets/bomb.png	
   FILE assets/frame.png assets/frame.png
-  FILE assets/grass1.png assets/grass1.png
-  FILE assets/grass2.png assets/grass2.png
+  FILE assets/tiles.png assets/tiles.png
   FILE assets/quest.png assets/quest.png
   FILE assets/mine.png assets/mine.png
   FILE assets/fixedsys.png assets/fixedsys.png
+  FILE sounds/click.wav sounds/click.wav
+  FILE sounds/jump.wav sounds/jump.wav
+  FILE sounds/boom.wav sounds/boom.wav
+  FILE sounds/tap.wav sounds/tap.wav
 )
