@@ -156,8 +156,7 @@ game_screen::game_screen(game *owner) : screen(owner) {
 			now_rec.push_back(records[i]);
 		}
 	}
-	if (now_rec!="")
-	change_theme(stoi(now_rec));
+	if (now_rec!="" && size!=0 && n>=4) change_theme(stoi(now_rec));
 	load(9, 9, 10);
 }
 void game_screen::open() {
