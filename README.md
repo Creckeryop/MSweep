@@ -1,6 +1,6 @@
 # MSweep
 Simple minesweeper written in C++ for PlayStation Vita<br>
-[<img src="https://img.shields.io/badge/release-v1.0-blue.svg">](https://github.com/Creckeryop/MSweep/releases)
+[<img src="https://img.shields.io/badge/release-v1.1-blue.svg">](https://github.com/Creckeryop/MSweep/releases)
 ## Features:
 * Saves
 * Nothing else, yes i am dumb
