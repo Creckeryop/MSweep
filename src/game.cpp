@@ -1,3 +1,4 @@
+/*this code was written by creckeryop*/
 #include "game.h"
 #include "screen.h"
 game::game() : state(1) {
