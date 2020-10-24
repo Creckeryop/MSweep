@@ -1,9 +1,9 @@
 #include <psp2/kernel/processmgr.h>
-#include <iostream>
 #include <time.h>
 #include "game.h"
 
-int main() {
+int main()
+{
 	srand(time(NULL));
 	game za;
 	za.run();

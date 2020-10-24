@@ -1,14 +1,18 @@
 #pragma once
 #include <vita2d.h>
-#include <iostream>
+#include <string>
+
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 15
 #define FONT_CENTERED 1
 #define FONT_LEFTED 2
 #define FONT_RIGHTED 3
-class Ffont {
+
+class Ffont
+{
 public:
 	vita2d_texture *texture = NULL;
+
 	Ffont();
 	int portLetter(char a);
 	void write(float x, float y, std::string str, unsigned int color);

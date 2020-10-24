@@ -1,7 +1,9 @@
 /*this code was written by creckeryop*/
 #include "game.h"
 #include "screen.h"
-game::game() : state(1) {
+
+game::game() : state(1)
+{
 	gSoloud.init();
 	jump.load("app0:/sounds/jump.wav");
 	click.load("app0:/sounds/click.wav");
@@ -15,11 +17,13 @@ game::game() : state(1) {
 	settingscreen = new settings_screen(this);
 }
 
-void game::run() {
+void game::run()
+{
 	vita2d_set_clear_color(RGBA8(0, 0, 0, 0xFF));
 	double delta = 1;
 	timer dtimer;
-	while (state) {
+	while (state)
+	{
 		dtimer.Reset();
 		vita2d_start_drawing();
 		vita2d_clear_screen();
@@ -32,7 +36,8 @@ void game::run() {
 		vita2d_end_drawing();
 		sceCtrlPeekBufferPositive(0, &pad, 1);
 		old_state = state;
-		switch (state) {
+		switch (state)
+		{
 		case 1:
 			gamescreen->control(pad, oldpad);
 			break;
@@ -52,7 +57,28 @@ void game::run() {
 	}
 }
 
-game::~game() {
+void game::play()
+{
+	gSoloud.play(click);
+}
+
+void game::jumps()
+{
+	gSoloud.play(jump);
+}
+
+void game::booms()
+{
+	gSoloud.play(boom);
+}
+
+void game::taps()
+{
+	gSoloud.play(tap);
+}
+
+game::~game()
+{
 	vita2d_fini();
 	delete font;
 	delete gamescreen;

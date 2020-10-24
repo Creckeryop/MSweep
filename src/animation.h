@@ -1,41 +1,17 @@
 #pragma once
 #include <vita2d.h>
-#include <iostream>
 #include "timer.h"
-class animation {
+
+class animation
+{
 public:
-	int images, width, height, delta, size;
 	bool loop;
-	vita2d_texture *sheet = NULL;
+	int images, width, height, delta, size, dx, dy;
 	timer time;
-	animation(vita2d_texture *_sheet, int _width, int w, int h, int dt, int _size, bool LOOP) {
-		sheet = _sheet;
-		width = w;
-		height = h;
-		delta = dt;
-		size = _size;
-		loop = LOOP;
-		images = _width / w;
-		time.Reset();
-	}
-	void Reset() {
-		time.Reset();
-	}
-	void Play(float x, float y, float rot) {
-		int card = time.GetTime() / delta;
-		if (card >= images || card < 0) {
-			if (loop) {
-				card = 0;
-				Reset();
-			}
-			else {
-				card = images - 1;
-			}
-		}
-		if (sheet!=NULL)
-			vita2d_draw_texture_part_scale_rotate(sheet, x, y, card * width, 0, width, height, size, size, rot);
-	}
-	~animation() {
-		delete sheet;
-	}
+	vita2d_texture *sheet = NULL;
+
+	animation(vita2d_texture *_sheet, int _width, int w, int h, int dt, int _size, int _dx, int _dy, bool LOOP);
+	void Reset();
+	void Play(float x, float y, float rot);
+	~animation();
 };

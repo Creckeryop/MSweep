@@ -14,7 +14,11 @@ Simple minesweeper written in C++ for PlayStation Vita<br>
 * <kbd>Triangle</kbd> - Recreate level
 * <kbd>Start</kbd> - Go to pause menu
 ## Building
-Just build it by typping `cmake .&& make`
+Install [vitasdk](https://github.com/vitasdk) and build MSweep using:
+
+```
+mkdir build && cd build && cmake .. && make
+```
 ## About save
 Save file is located in `ux0:data\msweep_save.txt` you can simply edit it<br>
 Here is template : `easy medium hard custom theme` <b>Do not make extra spaces</b><br>

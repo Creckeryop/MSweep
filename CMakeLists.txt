@@ -31,7 +31,7 @@ set(VITA_VERSION  "01.10")
 
 ## Flags and includes for building
 # Note that we make sure not to overwrite previous flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # Optional. You can specify more param.sfo flags this way.
 set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
@@ -69,7 +69,7 @@ add_executable(${PROJECT_NAME}
 # Library to link to (drop the -l prefix). This will mostly be stubs.
 target_link_libraries(${PROJECT_NAME}
 	SceLibKernel_stub # this line is only for demonstration. It's not needed as
-    vita2d 
+  vita2d 
 	soloud
 	pthread
 	SceAudio_stub
@@ -80,9 +80,10 @@ target_link_libraries(${PROJECT_NAME}
 	SceCtrl_stub 
 	ScePgf_stub 
 	ScePvf_stub
+  SceAppMgr_stub
 	SceCommonDialog_stub 
 	SceIofilemgr_stub 
-	freetype 
+	freetype
 	png 
 	jpeg 
 	z 
