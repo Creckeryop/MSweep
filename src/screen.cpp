@@ -6,14 +6,6 @@
 
 #define min(a, b) a < b ? a : b
 #define max(a, b) a > b ? a : b
-#define COLOR_BACKGROUND RGBA8(90, 105, 136, 255)
-#define COLOR_UNDER_TILE RGBA8(192, 203, 220, 255)
-#define COLOR_BWUNDER_TILE RGBA8(219, 219, 219, 255)
-#define COLOR_BORDER RGBA8(17, 9, 26, 255)
-#define COLOR_BWBORDER RGBA8(0, 0, 0, 255)
-#define COLOR_UNDER_TILE_DELIMETER RGBA8(79, 103, 129, 255)
-#define COLOR_TILE_SHADOW RGBA8(90, 105, 136, 255)
-#define COLOR_BWTILE_SHADOW RGBA8(135, 135, 135, 255)
 #define PI 3.141592
 
 using namespace std;
@@ -83,19 +75,6 @@ void draw_rect_out(float x, float y, float width, float height, int thin, unsign
 	vita2d_draw_rectangle(x, y + height - thin, width, thin, color);
 }
 
-void change_color(vita2d_texture *texture, float x, float y, float width, float height, unsigned int color)
-{
-	int *data = (int *)vita2d_texture_get_datap(texture);
-	int pitch = vita2d_texture_get_stride(texture) >> 2;
-	for (int i = x; i < x + width; ++i)
-	{
-		for (int j = y; j < y + height; ++j)
-		{
-			data[i + j * pitch] = color;
-		}
-	}
-}
-
 vita2d_texture *getCopy(vita2d_texture *texture, float x, float y, float width, float height)
 {
 	vita2d_texture *copy = vita2d_create_empty_texture(width, height);
@@ -145,20 +124,31 @@ void game_screen::change_theme(int theme_id)
 		theme_id = owner->max_theme;
 	}
 	vita2d_wait_rendering_done();
-	vita2d_free_texture(tile1);
-	vita2d_free_texture(tile2);
-	vita2d_free_texture(flag.sheet);
-	bomb.dy = 0;
-	mark.dy = 0;
-	flag.sheet = getCopy(flags, 0, 16 * theme_id, 176, 16);
-	tile1 = getCopy(tiles, 0, 18 * theme_id, 18, 18);
-	tile2 = getCopy(tiles, 18, 18 * theme_id, 18, 18);
-	if (theme_id == 5)
+	if (tile1 != NULL)
 	{
-		bomb.dy = 16;
-		mark.dy = 16;
+		vita2d_free_texture(tile1);
+		tile1 = NULL;
 	}
-	owner->theme = theme_id;
+	if (tile2 != NULL)
+	{
+		vita2d_free_texture(tile2);
+		tile2 = NULL;
+	}
+	if (flag.sheet != NULL)
+	{
+		vita2d_free_texture(flag.sheet);
+		flag.sheet = NULL;
+	}
+	owner->theme_id = theme_id;
+	theme *t = owner->themes[theme_id];
+	owner->current_theme = t;
+	bomb.dy = t->bomb_start_y;
+	mark.dy = t->mark_start_y;
+	flag.sheet = getCopy(flags, 0, t->flag_start_y, 176, 16);
+	tile1 = getCopy(tiles, 0, t->tile_start_y, 18, 18);
+	tile2 = getCopy(tiles, 18, t->tile_start_y, 18, 18);
+	bomb.dy = t->bomb_start_y;
+	mark.dy = t->mark_start_y;
 }
 
 void game_screen::save()
@@ -167,7 +157,7 @@ void game_screen::save()
 	SceUID fs = sceIoOpen("ux0:data/save_msweep.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
 	if (fs >= 0)
 	{
-		string rec = to_string(record_e.GetTime()) + " " + to_string(record_m.GetTime()) + " " + to_string(record_h.GetTime()) + " " + to_string(record_c.GetTime()) + " " + to_string(owner->theme);
+		string rec = to_string(record_e.GetTime()) + " " + to_string(record_m.GetTime()) + " " + to_string(record_h.GetTime()) + " " + to_string(record_c.GetTime()) + " " + to_string(owner->theme_id);
 		sceIoWrite(fs, rec.c_str(), rec.length());
 		sceIoClose(fs);
 	}
@@ -435,21 +425,15 @@ void game_screen::draw()
 	{
 		if (!created)
 		{
-			vita2d_draw_rectangle(0, 0, 960, 544, owner->Backs[owner->theme]);
+			vita2d_draw_rectangle(0, 0, 960, 544, owner->current_theme->background_color);
 			float width = 17 * size;
 			int y_s = min((544 - p_y) / width + 1, scene->height);
 			int x_s = min((960 - p_x) / width + 1, scene->width);
 			int s_x = max((0 - p_x) / width, 0);
 			int s_y = max((0 - p_y) / width, 0);
 			vita2d_draw_rectangle(p_x + s_x * width - 5, p_y + s_y * width + 5 + size, width * (x_s - s_x), width * (y_s - s_y), RGBA8(0, 0, 0, 60));
-			if (owner->theme == 5)
-			{
-				vita2d_draw_rectangle(p_x + s_x * width, p_y + s_y * width, width * (x_s - s_x), width * (y_s - s_y), COLOR_BWUNDER_TILE);
-			}
-			else
-			{
-				vita2d_draw_rectangle(p_x + s_x * width, p_y + s_y * width, width * (x_s - s_x), width * (y_s - s_y), COLOR_UNDER_TILE);
-			}
+			vita2d_draw_rectangle(p_x + s_x * width, p_y + s_y * width, width * (x_s - s_x), width * (y_s - s_y), owner->current_theme->undertile_color);
+			
 			float X = p_x + size * 17 * x_s;
 			for (int i = x_s - 1; i >= s_x; --i)
 			{
@@ -461,38 +445,16 @@ void game_screen::draw()
 					{
 						if (i < scene->width - 1 && (scene->actField[i + 1][j] == 1 || scene->actField[i + 1][j] == 4))
 						{
-							if (owner->theme == 5)
-							{
-								vita2d_draw_rectangle(X + width, Y + size, size, width - size, COLOR_BWTILE_SHADOW);
-							}
-							else
-							{
-								vita2d_draw_rectangle(X + width, Y + size, size, width - size, COLOR_TILE_SHADOW);
-							}
+							vita2d_draw_rectangle(X + width, Y + size, size, width - size, owner->current_theme->shadow_color);
 						}
 						if (j > 0 && (scene->actField[i][j - 1] == 1 || scene->actField[i][j - 1] == 4))
 						{
-							if (owner->theme == 5)
-							{
-								vita2d_draw_rectangle(X, Y, width, size, COLOR_BWTILE_SHADOW);
-							}
-							else
-							{
-								vita2d_draw_rectangle(X, Y, width, size, COLOR_TILE_SHADOW);
-							}
+							vita2d_draw_rectangle(X, Y, width, size, owner->current_theme->shadow_color);
 						}
 						if (scene->numField[i][j])
 						{
 							unsigned int color = 0;
-							if (owner->theme == 5)
-							{
-								color = BWColors[scene->numField[i][j]];
-							}
-							else
-							{
-								color = Colors[scene->numField[i][j]];
-							}
-
+							color = owner->current_theme->Colors[scene->numField[i][j]];
 							vita2d_draw_texture_part_tint_scale_rotate(font, X + (int)(width / 2), Y + (int)(width / 2), scene->numField[i][j] * 8, 0, 8, 9, size, size, 0, color);
 						}
 						if (scene->minField[i][j])
@@ -501,14 +463,7 @@ void game_screen::draw()
 						}
 						if (scene->actField[i][j] == 4)
 						{
-							if (owner->theme == 5)
-							{
-								vita2d_draw_texture_tint_part_scale(mine, X + 2, Y + 2, 0, 16, 16, 16, 2, 2, RGBA8(255, 255, 255, 180));
-							}
-							else
-							{
-								vita2d_draw_texture_tint_part_scale(mine, X + 2, Y + 2, 0, 0, 16, 16, 2, 2, RGBA8(255, 255, 255, 180));
-							}
+							vita2d_draw_texture_tint_part_scale(mine, X + 2, Y + 2, 0, owner->current_theme->bomb_start_y, 16, 16, 2, 2, RGBA8(255, 255, 255, 180));
 						}
 					}
 					else
@@ -516,25 +471,11 @@ void game_screen::draw()
 						vita2d_draw_texture_scale((i % 2 == j % 2) ? tile1 : tile2, X, Y, size, size);
 						if (j < scene->height - 1 && (scene->actField[i][j + 1] == 1 || scene->actField[i][j + 1] == 4))
 						{
-							if (owner->theme == 5)
-							{
-								vita2d_draw_rectangle(X, Y + width + size, width, size, COLOR_BWTILE_SHADOW);
-							}
-							else
-							{
-								vita2d_draw_rectangle(X, Y + width + size, width, size, COLOR_TILE_SHADOW);
-							}
+							vita2d_draw_rectangle(X, Y + width + size, width, size, owner->current_theme->shadow_color);
 						}
 						if (i > 0 && (scene->actField[i - 1][j] == 1 || scene->actField[i - 1][j] == 4))
 						{
-							if (owner->theme == 5)
-							{
-								vita2d_draw_rectangle(X - size, Y + size, size, width + size - (j == scene->height - 1 ? size : 0), COLOR_BWTILE_SHADOW);
-							}
-							else
-							{
-								vita2d_draw_rectangle(X - size, Y + size, size, width + size - (j == scene->height - 1 ? size : 0), COLOR_TILE_SHADOW);
-							}
+							vita2d_draw_rectangle(X - size, Y + size, size, width + size - (j == scene->height - 1 ? size : 0), owner->current_theme->shadow_color);
 						}
 						if (scene->actField[i][j] == 2)
 						{
@@ -552,16 +493,9 @@ void game_screen::draw()
 					Y += width;
 				}
 			}
-			if (owner->theme == 5)
-			{
-				draw_rect_out(p_x + s_x * width, p_y + s_y * width, width * (x_s - s_x) + size, width * (y_s - s_y) + size, size, COLOR_BWBORDER);
-				vita2d_draw_texture_part_scale(frame, p_x + frame_x * width, p_y + frame_y * width, 0, 18, 18, 18, size, size);
-			}
-			else
-			{
-				draw_rect_out(p_x + s_x * width, p_y + s_y * width, width * (x_s - s_x) + size, width * (y_s - s_y) + size, size, COLOR_BORDER);
-				vita2d_draw_texture_part_scale(frame, p_x + frame_x * width, p_y + frame_y * width, 0, 0, 18, 18, size, size);
-			}
+			draw_rect_out(p_x + s_x * width, p_y + s_y * width, width * (x_s - s_x) + size, width * (y_s - s_y) + size, size, owner->current_theme->border_color);
+			vita2d_draw_texture_part_scale(frame, p_x + frame_x * width, p_y + frame_y * width, 0, owner->current_theme->frame_start_y, 18, 18, size, size);
+
 			for (vector<particle>::iterator i = particles.begin(); i < particles.end(); i++)
 			{
 				(*i).Draw(p_x - 5, p_y + 5, RGBA8(0, 0, 0, 60));
@@ -576,14 +510,7 @@ void game_screen::draw()
 			{
 				vita2d_draw_rectangle(8, 43, 180, 20, RGBA8(32, 32, 32, 255));
 			}
-			if (owner->theme == 5)
-			{
-				vita2d_draw_texture_part_scale(mine, 10, 72, 0, 16, 16, 16, 2, 2);
-			}
-			else
-			{
-				vita2d_draw_texture_part_scale(mine, 10, 72, 0, 0, 16, 16, 2, 2);
-			}
+			vita2d_draw_texture_part_scale(mine, 10, 72, 0, owner->current_theme->bomb_start_y, 16, 16, 2, 2);
 			owner->font->write(45, 74, 2, to_string(scene->mines - scene->flags), RGBA8(0, 0, 0, 60));
 			owner->font->write(48, 71, 2, to_string(scene->mines - scene->flags), RGBA8(255, 255, 255, 255));
 			owner->font->write(12, 11, 2, "Time:" + GetTime(time.GetTime()), RGBA8(255, 255, 255, 255));
@@ -733,7 +660,7 @@ void pause_screen::draw()
 			{
 				owner->font->write(480 + owner->settingscreen->x / 3, 272 + y, 3, states[i], state == i ? RGBA8(255, 255, 255, 255) : RGBA8(100, 100, 100, 255), FONT_CENTERED);
 			}
-			owner->font->write(10, 522, 1, "v 1.2", RGBA8(255, 255, 255, 255), FONT_LEFTED);
+			owner->font->write(10, 522, 1, "v 1.2.1", RGBA8(255, 255, 255, 255), FONT_LEFTED);
 			owner->font->write(950, 522, 1, "creckeryop 2019 - 2020", RGBA8(255, 255, 255, 255), FONT_RIGHTED);
 			vita2d_draw_texture_part(owner->gamescreen->screenshot, 0, -y, 0, 0, 960, 272);
 			vita2d_draw_texture_part(owner->gamescreen->screenshot, 0, 272 + y, 0, 272, 960, 272);
@@ -849,7 +776,7 @@ void settings_screen::draw()
 				}
 				else if (i == 4)
 				{
-					now = states[i] + "<" + to_string(owner->theme) + ">";
+					now = states[i] + "<" + to_string(owner->theme_id) + ">";
 				}
 				else if (i == 5)
 				{
@@ -858,7 +785,7 @@ void settings_screen::draw()
 				owner->font->write(1200 + x, 544 / 2 - 50 + y, 2, now, state == i ? RGBA8(255, 255, 255, 255) : RGBA8(100, 100, 100, 255), FONT_CENTERED);
 			}
 		}
-		vita2d_draw_rectangle(1400 + x, 544 / 2 - 50, 120, 100, owner->Backs[owner->theme]);
+		vita2d_draw_rectangle(1400 + x, 544 / 2 - 50, 120, 100, owner->current_theme->background_color);
 		for (int i = 0; i < 4; ++i)
 		{
 			for (int j = 0; j < 4; ++j)
@@ -951,7 +878,7 @@ void settings_screen::control(SceCtrlData &pad, SceCtrlData &oldpad)
 					}
 					break;
 				case 4:
-					((game_screen *)owner->gamescreen)->change_theme(owner->theme + 1);
+					((game_screen *)owner->gamescreen)->change_theme(owner->theme_id + 1);
 					((game_screen *)owner->gamescreen)->save();
 					break;
 				default:
@@ -987,7 +914,7 @@ void settings_screen::control(SceCtrlData &pad, SceCtrlData &oldpad)
 					}
 					break;
 				case 4:
-					((game_screen *)owner->gamescreen)->change_theme(owner->theme - 1);
+					((game_screen *)owner->gamescreen)->change_theme(owner->theme_id - 1);
 					((game_screen *)owner->gamescreen)->save();
 					break;
 				default:

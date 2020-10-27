@@ -2,6 +2,35 @@
 #include "game.h"
 #include "screen.h"
 
+void game::load_themes()
+{
+	themes.push_back(new theme(RGBA8(90, 105, 136, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 0, 0, 0));
+	themes.push_back(new theme(RGBA8(48, 96, 130, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 18, 16, 0));
+	themes.push_back(new theme(RGBA8(39, 39, 54, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 36, 32, 0));
+	themes.push_back(new theme(RGBA8(50, 62, 79, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 54, 48, 0));
+	themes.push_back(new theme(RGBA8(76, 69, 109, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 72, 64, 0));
+
+	theme *bw_theme = new theme(RGBA8(104, 104, 104, 255), RGBA8(219, 219, 219, 255), RGBA8(0, 0, 0, 255), RGBA8(135, 135, 135, 255), 16, 16, 90, 80, 18);
+	int BWColors[10] = {
+		RGBA8(0, 0, 0, 255),
+		RGBA8(94, 94, 94, 255),
+		RGBA8(132, 132, 132, 255),
+		RGBA8(162, 162, 162, 255),
+		RGBA8(124, 124, 124, 255),
+		RGBA8(155, 155, 155, 255),
+		RGBA8(132, 132, 132, 255),
+		RGBA8(209, 209, 209, 255),
+		RGBA8(69, 69, 69, 255),
+		RGBA8(25, 25, 25, 255)};
+	bw_theme->set_colors(BWColors);
+
+	themes.push_back(bw_theme);
+	for (auto _ : themes)
+	{
+		max_theme++;
+	}
+}
+
 game::game() : state(1)
 {
 	gSoloud.init();
@@ -12,6 +41,7 @@ game::game() : state(1)
 	vita2d_init();
 	memset(&pad, 0, sizeof(pad));
 	font = new Ffont();
+	load_themes();
 	gamescreen = new game_screen(this);
 	pausescreen = new pause_screen(this);
 	settingscreen = new settings_screen(this);
@@ -79,6 +109,10 @@ void game::taps()
 
 game::~game()
 {
+	for (auto t : themes)
+	{
+		delete t;
+	}
 	vita2d_fini();
 	delete font;
 	delete gamescreen;

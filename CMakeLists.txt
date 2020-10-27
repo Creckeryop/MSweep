@@ -50,20 +50,14 @@ link_directories(
 # Add all the files needed to compile here
 add_executable(${PROJECT_NAME}
   src/main.cpp
-  src/timer.h
   src/timer.cpp
-  src/minesweeper.h
   src/minesweeper.cpp
-  src/Ffont.h
   src/Ffont.cpp
-  src/screen.h
   src/screen.cpp
-  src/game.h
   src/game.cpp
-  src/animation.h
   src/animation.cpp
-  src/particle.h
   src/particle.cpp
+  src/theme.cpp
 )
 
 # Library to link to (drop the -l prefix). This will mostly be stubs.

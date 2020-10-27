@@ -40,30 +40,6 @@ private:
 	void open();
 	bool around(int x, int y);
 public:
-	int Colors[10] = {
-		RGBA8(0, 0, 0, 255),
-		RGBA8(57, 90, 211, 255),
-		RGBA8(0, 135, 81, 255),
-		RGBA8(219, 0, 69, 255),
-		RGBA8(126, 37, 83, 255),
-		RGBA8(131, 118, 156, 255),
-		RGBA8(0, 135, 81, 255),
-		RGBA8(211, 99, 140, 255),
-		RGBA8(69, 69, 69, 255),
-		RGBA8(25, 25, 25, 255)
-	};
-	int BWColors[10] = {
-		RGBA8(0, 0, 0, 255),
-		RGBA8(94, 94, 94, 255),
-		RGBA8(132, 132, 132, 255),
-		RGBA8(162, 162, 162, 255),
-		RGBA8(124, 124, 124, 255),
-		RGBA8(155, 155, 155, 255),
-		RGBA8(132, 132, 132, 255),
-		RGBA8(209, 209, 209, 255),
-		RGBA8(69, 69, 69, 255),
-		RGBA8(25, 25, 25, 255)
-	};
 	float p_x = 0, p_y = 0;
 	vita2d_texture *tile1 = NULL, *tile2 = NULL, *frame = NULL, *font = NULL, *wind = NULL, *mine = NULL, *buttons = NULL, *tiles = NULL, *flags = NULL;
 	animation bomb = animation(vita2d_load_PNG_file("app0:assets/bomb.png"), 176, 16, 16, 50, 2, 0, 0, false);

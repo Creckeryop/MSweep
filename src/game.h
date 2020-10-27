@@ -3,21 +3,26 @@
 #include <psp2/audioout.h>
 #include <psp2/ctrl.h>
 #include <vita2d.h>
+#include <vector>
 #include "Ffont.h"
 #include "soloud.h"
 #include "soloud_wav.h"
 #include "soloud_speech.h"
+#include "theme.h"
 
 class screen;
 
 class game
 {
+private:
+	void load_themes();
 public:
 	int state = 1, old_state = 1;
 	int mode = 0;
-	int theme = -1, max_theme = 5;
+	int theme_id = -1, max_theme = -1;
 	int width = 9, height = 9, mines = 10;
-	int Backs[6] = {RGBA8(90, 105, 136, 255), RGBA8(48, 96, 130, 255), RGBA8(39, 39, 54, 255), RGBA8(50, 62, 79, 255), RGBA8(76, 69, 109, 255), RGBA8(104, 104, 104, 255)};
+	std::vector<theme*> themes;
+	theme *current_theme;
 	SoLoud::Soloud gSoloud;
 	SoLoud::Wav click;
 	SoLoud::Wav jump;
