@@ -8,8 +8,9 @@ void theme::set_colors(int *colors)
     }
 }
 
-theme::theme(unsigned int bck_c, unsigned int und_c, unsigned int brd_c, unsigned int shd_c, int b_y, int m_y, int t_y, int f_y, int frame_y)
+theme::theme(std::string _name, unsigned int bck_c, unsigned int und_c, unsigned int brd_c, unsigned int shd_c, int b_y, int m_y, int t_y, int f_y, int frame_y)
 {
+    name = _name;
     background_color = bck_c;
     undertile_color = und_c;
     border_color = brd_c;

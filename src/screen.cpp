@@ -776,7 +776,7 @@ void settings_screen::draw()
 				}
 				else if (i == 4)
 				{
-					now = states[i] + "<" + to_string(owner->theme_id) + ">";
+					now = states[i] + "<" + owner->themes[owner->theme_id]->name + ">";
 				}
 				else if (i == 5)
 				{

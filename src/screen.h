@@ -77,7 +77,7 @@ class settings_screen : public screen
 {
 public:
 	int pause_3 = 0;
-	std::string states[6] = {"", "Width: ", "Height: ", "Mines: ", "Style: ", "Reset Saves"};
+	std::string states[6] = {"", "Width: ", "Height: ", "Mines: ", "Themes: ", "Reset Saves"};
 	std::string modes[5] = {"Easy", "Medium", "Expert", "Custom"};
 
 	settings_screen(game *owner);

@@ -4,13 +4,13 @@
 
 void game::load_themes()
 {
-	themes.push_back(new theme(RGBA8(90, 105, 136, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 0, 0, 0));
-	themes.push_back(new theme(RGBA8(48, 96, 130, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 18, 16, 0));
-	themes.push_back(new theme(RGBA8(39, 39, 54, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 36, 32, 0));
-	themes.push_back(new theme(RGBA8(50, 62, 79, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 54, 48, 0));
-	themes.push_back(new theme(RGBA8(76, 69, 109, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 72, 64, 0));
+	themes.push_back(new theme("Classic", RGBA8(90, 105, 136, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 0, 0, 0));
+	themes.push_back(new theme("Dark Classic", RGBA8(48, 96, 130, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 18, 16, 0));
+	themes.push_back(new theme("Chocolate", RGBA8(39, 39, 54, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 36, 32, 0));
+	themes.push_back(new theme("Pinky", RGBA8(50, 62, 79, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 54, 48, 0));
+	themes.push_back(new theme("Motroskin", RGBA8(76, 69, 109, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 0, 0, 72, 64, 0));
 
-	theme *bw_theme = new theme(RGBA8(104, 104, 104, 255), RGBA8(219, 219, 219, 255), RGBA8(0, 0, 0, 255), RGBA8(135, 135, 135, 255), 16, 16, 90, 80, 18);
+	theme *bw_theme = new theme("Black & White", RGBA8(104, 104, 104, 255), RGBA8(219, 219, 219, 255), RGBA8(0, 0, 0, 255), RGBA8(135, 135, 135, 255), 16, 16, 90, 80, 18);
 	int BWColors[10] = {
 		RGBA8(0, 0, 0, 255),
 		RGBA8(94, 94, 94, 255),
@@ -25,6 +25,7 @@ void game::load_themes()
 	bw_theme->set_colors(BWColors);
 
 	themes.push_back(bw_theme);
+	themes.push_back(new theme("Realistic", RGBA8(90, 105, 136, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 32, 0, 108, 96, 36));
 	for (auto _ : themes)
 	{
 		max_theme++;
