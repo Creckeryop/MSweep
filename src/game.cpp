@@ -26,6 +26,7 @@ void game::load_themes()
 
 	themes.push_back(bw_theme);
 	themes.push_back(new theme("Realistic", RGBA8(90, 105, 136, 255), RGBA8(192, 203, 220, 255), RGBA8(17, 9, 26, 255), RGBA8(90, 105, 136, 255), 32, 0, 108, 96, 36));
+	themes.push_back(new theme("OldSchool", RGBA8(0, 128, 129, 255), RGBA8(192, 192, 192, 255), RGBA8(17, 9, 26, 255), RGBA8(128, 128, 128, 255), 48, 32, 126, 112, 0));
 	for (auto _ : themes)
 	{
 		max_theme++;

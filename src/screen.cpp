@@ -451,16 +451,17 @@ void game_screen::draw()
 						{
 							vita2d_draw_rectangle(X, Y, width, size, owner->current_theme->shadow_color);
 						}
-						if (scene->numField[i][j])
+						if (scene->minField[i][j])
+						{
+							bomb.Play(X + width / 2, Y + width / 2, 0);
+						}
+						else if (scene->numField[i][j])
 						{
 							unsigned int color = 0;
 							color = owner->current_theme->Colors[scene->numField[i][j]];
 							vita2d_draw_texture_part_tint_scale_rotate(font, X + (int)(width / 2), Y + (int)(width / 2), scene->numField[i][j] * 8, 0, 8, 9, size, size, 0, color);
 						}
-						if (scene->minField[i][j])
-						{
-							bomb.Play(X + width / 2, Y + width / 2, 0);
-						}
+						
 						if (scene->actField[i][j] == 4)
 						{
 							vita2d_draw_texture_tint_part_scale(mine, X + 2, Y + 2, 0, owner->current_theme->bomb_start_y, 16, 16, 2, 2, RGBA8(255, 255, 255, 180));
