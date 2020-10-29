@@ -737,11 +737,12 @@ void pause_screen::control(SceCtrlData &pad, SceCtrlData &oldpad)
 		}
 		if (owner->state < 2)
 		{
-			owner->gamescreen->created = false;
 			vita2d_wait_rendering_done();
 			vita2d_free_texture(owner->gamescreen->screenshot);
-			created = true;
+			owner->gamescreen->screenshot = NULL;
+			owner->gamescreen->created = false;
 			screenshot = make_screenshot();
+			created = true;
 		}
 	}
 }
